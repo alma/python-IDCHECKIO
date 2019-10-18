@@ -22,7 +22,7 @@
     limitations under the License.
 """
 
-from __future__ import absolute_import
+
 
 import sys
 import io
@@ -48,7 +48,7 @@ try:
     from urllib.parse import urlencode
 except ImportError:
     # for python2
-    from urllib import urlencode
+    from urllib.parse import urlencode
 
 
 logger = logging.getLogger(__name__)
@@ -182,7 +182,7 @@ class RESTClientObject(object):
         # log response body
         logger.debug("response body: %s" % r.data)
 
-        if r.status not in chain(range(200, 206), 303):
+        if r.status not in chain(list(range(200, 206)), [303]):
             raise ApiException(http_resp=r)
 
         return r

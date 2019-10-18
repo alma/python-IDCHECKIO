@@ -22,7 +22,7 @@
     limitations under the License.
 """
 
-from __future__ import absolute_import
+
 
 # import models into sdk package
 from .models.check_summary_of_the_submitted_document import CheckSummaryOfTheSubmittedDocument

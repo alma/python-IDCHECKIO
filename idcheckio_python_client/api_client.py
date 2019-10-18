@@ -18,7 +18,7 @@ Copyright 2016 SmartBear Software
    ref: https://github.com/swagger-api/swagger-codegen
 """
 
-from __future__ import absolute_import
+
 from . import models
 from .rest import RESTClientObject
 from .rest import ApiException
@@ -26,7 +26,7 @@ from .rest import ApiException
 import os
 import re
 import sys
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import json
 import mimetypes
 import random
@@ -44,12 +44,12 @@ try:
     from urllib.parse import quote
 except ImportError:
     # for python2
-    from urllib import quote
+    from urllib.parse import quote
 
 # special handling of `long` (python2 only)
 try:
     # Python 2
-    long
+    int
 except NameError:
     # Python 3
     long = int
@@ -201,9 +201,9 @@ class ApiClient(object):
         :param obj: The data to serialize.
         :return: The serialized form of data.
         """
-        types = (str, int, long, float, bool, tuple)
+        types = (str, int, int, float, bool, tuple)
         if sys.version_info < (3, 0):
-            types = types + (unicode,)
+            types = types + (str,)
         if isinstance(obj, type(None)):
             return None
         elif isinstance(obj, types):
@@ -284,7 +284,7 @@ class ApiClient(object):
             else:
                 klass = eval('models.' + klass)
 
-        if klass in [int, long, float, str, bool]:
+        if klass in [int, int, float, str, bool]:
             return self.__deserialize_primitive(data, klass)
         elif klass == object:
             return self.__deserialize_object(data)
@@ -429,7 +429,7 @@ class ApiClient(object):
         if not accepts:
             return
 
-        accepts = list(map(lambda x: x.lower(), accepts))
+        accepts = list([x.lower() for x in accepts])
 
         if 'application/json' in accepts:
             return 'application/json'
@@ -446,7 +446,7 @@ class ApiClient(object):
         if not content_types:
             return 'application/json'
 
-        content_types = list(map(lambda x: x.lower(), content_types))
+        content_types = list([x.lower() for x in content_types])
 
         if 'application/json' in content_types:
             return 'application/json'
@@ -518,7 +518,7 @@ class ApiClient(object):
         try:
             value = klass(data)
         except UnicodeEncodeError:
-            value = unicode(data)
+            value = str(data)
         except TypeError:
             value = data
         return value
